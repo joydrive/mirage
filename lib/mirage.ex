@@ -1,15 +1,19 @@
 defmodule Mirage do
-  defstruct byte_size: nil,
-            format: nil,
-            height: nil,
-            width: nil,
-            resource: nil
+  alias Mirage.Image
 
-  def from_bytes(bytes) do
-    Mirage.Native.from_bytes(bytes)
+  @doc """
+  Resizes an image to a given dimensions.
+  """
+  @spec resize(Image.t(), integer(), integer()) :: Image.t()
+  def resize(image, width, height) do
+    Mirage.Native.resize(image.resource, width, height)
   end
 
-  def resize(%Mirage{} = mirage, width, height) do
-    Mirage.Native.resize(mirage.resource, width, height)
+  @doc """
+  Overlays Image A over Image B
+  """
+  @spec overlay_image(Image.t(), Image.t(), keyword()) :: Image.t()
+  def overlay_image(_image_a, _image_b, _options) do
+    :todo
   end
 end

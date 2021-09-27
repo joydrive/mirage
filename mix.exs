@@ -21,7 +21,9 @@ defmodule Mirage.MixProject do
 
   defp deps do
     [
-      {:rustler, "~> 0.22-rc"}
+      {:rustler, "~> 0.22"},
+      {:exblockhash,
+       git: "https://github.com/joydrive/exblockhash.git", ref: "43a9d35", only: [:test]}
     ]
   end
 end

@@ -4,5 +4,6 @@ rustler::atoms! {
     jpg,
     png,
     gif,
+    invalid_image,
     unsupported_image_format
 }
