@@ -44,4 +44,16 @@ defmodule MirageTest do
     assert image.width == 200
     assert image.height == 200
   end
+
+  test "overlay" do
+    bottom = File.read!("./test/support/images/scrogson.jpeg")
+    top = File.read!("./test/support/images/joydrive.png")
+
+    {:ok, bottom} = Mirage.Image.from_bytes(bottom)
+    {:ok, top} = Mirage.Image.from_bytes(top)
+
+    {:ok, new_image} = Mirage.overlay(bottom, top, 160, 160)
+
+    :ok = Mirage.write(new_image, "./test/support/images/overlay.png")
+  end
 end

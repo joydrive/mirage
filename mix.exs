@@ -4,7 +4,7 @@ defmodule Mirage.MixProject do
   def project do
     [
       app: :mirage,
-      compilers: [:rustler] ++ Mix.compilers(),
+      compilers: Mix.compilers(),
       deps: deps(),
       elixir: "~> 1.7",
       rustler_crates: [mirage: []],

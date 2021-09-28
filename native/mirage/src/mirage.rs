@@ -1,4 +1,4 @@
-use image::{DynamicImage, FilterType, GenericImageView, ImageFormat};
+use image::{imageops::FilterType, DynamicImage, GenericImageView, ImageFormat};
 use rustler::{
     Atom, Binary, Env, Error, NifResult, NifStruct, NifUnitEnum, OwnedBinary, ResourceArc, Term,
 };
@@ -8,7 +8,7 @@ use crate::atoms::{
     gif, invalid_image, io_error, jpg, ok, out_of_memory, png, unsupported_image_format,
 };
 
-#[derive(NifStruct)]
+#[derive(NifStruct, Clone)]
 #[module = "Mirage.Image"]
 pub struct MirageImage {
     byte_size: usize,
@@ -75,8 +75,8 @@ pub fn resize(
 ) -> Result<(Atom, Binary, MirageImage), Error> {
     let resized = resource.image.resize_to_fill(width, height, filter.into());
     let mut output = Vec::new();
-    let mut binary = OwnedBinary::new(resized.raw_pixels().len())
-        .ok_or(Error::Term(Box::new(out_of_memory())))?;
+    let mut binary =
+        OwnedBinary::new(resized.pixels().count()).ok_or(Error::Term(Box::new(out_of_memory())))?;
 
     let _ = resized
         .write_to(&mut output, resource.format)
@@ -104,11 +104,63 @@ pub fn resize(
 
 fn image_format(format: ImageFormat) -> NifResult<Atom> {
     match format {
-        ImageFormat::PNG => Ok(png()),
-        ImageFormat::JPEG => Ok(jpg()),
-        ImageFormat::GIF => Ok(gif()),
+        ImageFormat::Png => Ok(png()),
+        ImageFormat::Jpeg => Ok(jpg()),
+        ImageFormat::Gif => Ok(gif()),
         _ => Err(Error::Term(Box::new(unsupported_image_format()))),
     }
+}
+
+#[rustler::nif(schedule = "DirtyCpu")]
+pub fn overlay(
+    env: Env,
+    bottom: MirageImage,
+    top: MirageImage,
+    x: u32,
+    y: u32,
+) -> Result<(Atom, MirageImage), Error> {
+    let mut working_image = bottom.resource.image.clone();
+
+    image::imageops::overlay(&mut working_image, &top.resource.image, x, y);
+
+    let new_image = MirageImage {
+        byte_size: bottom.byte_size,
+        format: bottom.format,
+        height: bottom.height,
+        width: bottom.width,
+        resource: ResourceArc::new(Image {
+            image: working_image,
+            format: bottom.resource.format,
+        }),
+    };
+
+    Ok((ok(), new_image))
+}
+
+#[derive(NifUnitEnum)]
+pub enum Format {
+    Png,
+    Jpeg,
+    Gif,
+}
+
+impl Into<ImageFormat> for Format {
+    fn into(self) -> ImageFormat {
+        use Format::*;
+
+        match self {
+            Png => ImageFormat::Png,
+            Jpeg => ImageFormat::Jpeg,
+            Gif => ImageFormat::Gif,
+        }
+    }
+}
+
+#[rustler::nif(schedule = "DirtyCpu")]
+pub fn write(env: Env, image: MirageImage, destination: String) -> Result<Atom, Error> {
+    image.resource.image.save(destination);
+
+    Ok(ok())
 }
 
 pub fn load(env: Env, _info: Term) -> bool {

@@ -5,7 +5,9 @@ rustler::init! {
     "Elixir.Mirage.Native",
     [
         mirage::from_bytes,
-        mirage::resize
+        mirage::resize,
+        mirage::overlay,
+        mirage::write
     ],
     load = mirage::load
 }

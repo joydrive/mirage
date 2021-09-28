@@ -22,10 +22,15 @@ defmodule Mirage do
   end
 
   @doc """
-  Overlays Image A over Image B
+  Overlays the `top` image over the `bottom` image.
   """
-  @spec overlay_image(Image.t(), Image.t(), keyword()) :: Image.t()
-  def overlay_image(_image_a, _image_b, _options) do
-    :todo
+  @spec overlay(Image.t(), Image.t(), non_neg_integer(), non_neg_integer()) :: Image.t()
+  def overlay(bottom, top, x, y) do
+    Mirage.Native.overlay(bottom, top, x, y)
+  end
+
+  @spec write(Image.t(), String.t()) :: :ok | :error
+  def write(image, path) do
+    Mirage.Native.write(image, path)
   end
 end
