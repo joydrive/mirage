@@ -38,14 +38,14 @@ defmodule MirageTest do
 
     byte_size = byte_size(bytes)
 
-    {:ok, _new_bytes, image} = Mirage.resize(image, 200, 200)
+    {:ok, image} = Mirage.resize(image, 200, 200)
 
     assert image.byte_size > byte_size
     assert image.width == 200
     assert image.height == 200
   end
 
-  test "overlay" do
+  test "overlay/4" do
     bottom = File.read!("./test/support/images/scrogson.jpeg")
     top = File.read!("./test/support/images/joydrive.png")
 
@@ -55,5 +55,21 @@ defmodule MirageTest do
     {:ok, new_image} = Mirage.overlay(bottom, top, 160, 160)
 
     :ok = Mirage.write(new_image, "./test/support/images/overlay.png")
+  end
+
+  test "resize_to_fill/3" do
+    bytes = File.read!("./test/support/images/scrogson.jpeg")
+
+    {:ok, image} = Mirage.Image.from_bytes(bytes)
+
+    {:ok, new_image} = Mirage.resize(image, 1000, 100)
+
+    :ok = Mirage.write(new_image, "./test/support/images/resize_to_fill.png")
+  end
+
+  test "empty/2" do
+    {:ok, image} = Mirage.Image.empty(100, 100)
+
+    :ok = Mirage.write(image, "./test/support/images/empty.png")
   end
 end

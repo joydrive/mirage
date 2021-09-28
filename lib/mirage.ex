@@ -22,6 +22,18 @@ defmodule Mirage do
   end
 
   @doc """
+  Resize this image using the specified filter algorithm defaults to
+  `:triangle`. The image’s aspect ratio is preserved. The image is scaled to the
+  maximum possible size that fits within the larger (relative to aspect ratio)
+  of the bounds specified by nwidth and nheight, then cropped to fit within the
+  other bound.
+  """
+  @spec resize_to_fill(Image.t(), integer(), integer(), filter_type()) :: Image.t()
+  def resize_to_fill(image, new_width, new_height, filter \\ :triangle) do
+    Mirage.Native.resize_to_fill(image.resource, new_width, new_height, filter)
+  end
+
+  @doc """
   Overlays the `top` image over the `bottom` image.
   """
   @spec overlay(Image.t(), Image.t(), non_neg_integer(), non_neg_integer()) :: Image.t()

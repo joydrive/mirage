@@ -17,4 +17,12 @@ defmodule Mirage.Image do
   def from_bytes(bytes) do
     Mirage.Native.from_bytes(bytes)
   end
+
+  @doc """
+  Creates a new empty image with the given width and height.
+  """
+  @spec empty(non_neg_integer(), non_neg_integer()) :: {:ok, t()}
+  def empty(width, height) do
+    Mirage.Native.empty(width, height)
+  end
 end

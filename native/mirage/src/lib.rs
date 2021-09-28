@@ -6,8 +6,10 @@ rustler::init! {
     [
         mirage::from_bytes,
         mirage::resize,
+        mirage::resize_to_fill,
         mirage::overlay,
-        mirage::write
+        mirage::write,
+        mirage::empty,
     ],
     load = mirage::load
 }

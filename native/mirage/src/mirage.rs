@@ -72,14 +72,40 @@ pub fn resize(
     width: u32,
     height: u32,
     filter: FilterEnum,
-) -> Result<(Atom, Binary, MirageImage), Error> {
+) -> Result<(Atom, MirageImage), Error> {
+    let resized = resource.image.resize(width, height, filter.into());
+
+    let new_image = dyn_to_image(env, resized, resource.format)?;
+
+    Ok((ok(), new_image))
+}
+
+#[rustler::nif(schedule = "DirtyCpu")]
+pub fn resize_to_fill(
+    env: Env,
+    resource: ResourceArc<Image>,
+    width: u32,
+    height: u32,
+    filter: FilterEnum,
+) -> Result<(Atom, MirageImage), Error> {
     let resized = resource.image.resize_to_fill(width, height, filter.into());
+
+    let new_image = dyn_to_image(env, resized, resource.format)?;
+
+    Ok((ok(), new_image))
+}
+
+fn dyn_to_image(
+    env: Env,
+    resized: DynamicImage,
+    iformat: ImageFormat,
+) -> Result<MirageImage, Error> {
     let mut output = Vec::new();
     let mut binary =
         OwnedBinary::new(resized.pixels().count()).ok_or(Error::Term(Box::new(out_of_memory())))?;
 
     let _ = resized
-        .write_to(&mut output, resource.format)
+        .write_to(&mut output, iformat)
         .map_err(|_e| Error::Term(Box::new(out_of_memory())))?;
 
     binary
@@ -87,19 +113,20 @@ pub fn resize(
         .write_all(&output)
         .map_err(|_| Error::Term(Box::new(io_error())))?;
 
-    let format = image_format(resource.format)?;
+    let format = image_format(iformat)?;
     let bytes = binary.release(env);
     let byte_size = bytes.as_slice().len();
 
-    let mirage = MirageImage {
+    Ok(MirageImage {
         byte_size,
         format,
-        height,
-        width,
-        resource,
-    };
-
-    Ok((ok(), bytes, mirage))
+        height: resized.height(),
+        width: resized.width(),
+        resource: ResourceArc::new(Image {
+            image: resized,
+            format: iformat,
+        }),
+    })
 }
 
 fn image_format(format: ImageFormat) -> NifResult<Atom> {
@@ -158,9 +185,22 @@ impl Into<ImageFormat> for Format {
 
 #[rustler::nif(schedule = "DirtyCpu")]
 pub fn write(env: Env, image: MirageImage, destination: String) -> Result<Atom, Error> {
-    image.resource.image.save(destination);
+    image
+        .resource
+        .image
+        .save(destination)
+        .map_err(|_e| Error::Term(Box::new(io_error())))?;
 
     Ok(ok())
+}
+
+#[rustler::nif(schedule = "DirtyCpu")]
+pub fn empty(env: Env, width: u32, height: u32) -> Result<(Atom, MirageImage), Error> {
+    let dyn_image = DynamicImage::new_rgba8(width, height);
+
+    let image = dyn_to_image(env, dyn_image, ImageFormat::Png)?;
+
+    Ok((ok(), image))
 }
 
 pub fn load(env: Env, _info: Term) -> bool {
