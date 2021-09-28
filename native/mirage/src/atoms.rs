@@ -5,5 +5,7 @@ rustler::atoms! {
     png,
     gif,
     invalid_image,
-    unsupported_image_format
+    unsupported_image_format,
+    out_of_memory,
+    io_error
 }
