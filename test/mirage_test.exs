@@ -7,12 +7,9 @@ defmodule MirageTest do
     test "loads images and metadata correctly" do
       bytes = File.read!("./test/support/images/scrogson.jpeg")
 
-      byte_size = byte_size(bytes)
+      {:ok, :jpeg, image} = Mirage.Image.from_bytes(bytes)
 
-      {:ok, image} = Mirage.Image.from_bytes(bytes)
-
-      assert image.byte_size == byte_size
-      assert image.format == :jpg
+      assert image.byte_size == 634_800
       assert image.width == 460
       assert image.height == 460
       assert is_reference(image.resource)
@@ -23,34 +20,26 @@ defmodule MirageTest do
 
       {:error, :invalid_image} = Mirage.Image.from_bytes(failing_bytes)
     end
-
-    test "fails when the provided bytes are not an image 2" do
-      bytes = File.read!("./test/support/images/scrogson.hdr")
-
-      {:error, :unsupported_image_format} = Mirage.Image.from_bytes(bytes)
-    end
   end
 
   test "resize" do
     bytes = File.read!("./test/support/images/scrogson.jpeg")
 
-    {:ok, image} = Mirage.Image.from_bytes(bytes)
+    {:ok, :jpeg, image} = Mirage.Image.from_bytes(bytes)
 
-    byte_size = byte_size(bytes)
+    {:ok, resized_image} = Mirage.resize(image, 200, 200)
 
-    {:ok, image} = Mirage.resize(image, 200, 200)
-
-    assert image.byte_size > byte_size
-    assert image.width == 200
-    assert image.height == 200
+    assert image.byte_size > resized_image.byte_size
+    assert resized_image.width == 200
+    assert resized_image.height == 200
   end
 
   test "overlay/4" do
     bottom = File.read!("./test/support/images/scrogson.jpeg")
     top = File.read!("./test/support/images/joydrive.png")
 
-    {:ok, bottom} = Mirage.Image.from_bytes(bottom)
-    {:ok, top} = Mirage.Image.from_bytes(top)
+    {:ok, _, bottom} = Mirage.Image.from_bytes(bottom)
+    {:ok, _, top} = Mirage.Image.from_bytes(top)
 
     {:ok, new_image} = Mirage.overlay(bottom, top, 160, 160)
 
@@ -60,7 +49,7 @@ defmodule MirageTest do
   test "resize_to_fill/3" do
     bytes = File.read!("./test/support/images/scrogson.jpeg")
 
-    {:ok, image} = Mirage.Image.from_bytes(bytes)
+    {:ok, :jpeg, image} = Mirage.Image.from_bytes(bytes)
 
     {:ok, new_image} = Mirage.resize(image, 1000, 100)
 

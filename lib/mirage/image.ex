@@ -1,19 +1,38 @@
 defmodule Mirage.Image do
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+          byte_size: non_neg_integer(),
+          height: non_neg_integer(),
+          width: non_neg_integer()
+        }
 
-  defstruct byte_size: nil,
-            format: nil,
-            height: nil,
-            width: nil,
-            resource: nil
+  @type format ::
+          :png
+          | :jpeg
+          | :gif
+          | :webp
+          | :pnm
+          | :tiff
+          | :tga
+          | :dds
+          | :bmp
+          | :ico
+          | :hdr
+          | :farbfeld
+          | :avif
+
+  defstruct(
+    byte_size: nil,
+    height: nil,
+    width: nil,
+    resource: nil
+  )
 
   @doc """
   Loads an image from Erlang bytes.
   """
   @spec from_bytes(binary()) ::
-          {:ok, t()}
-          | {:error, :badarg}
-          | {:error, :unsupported_image_format}
+          {:ok, format(), t()}
+          | {:error, :invalid_image | :unsupported_image_format}
   def from_bytes(bytes) do
     Mirage.Native.from_bytes(bytes)
   end
