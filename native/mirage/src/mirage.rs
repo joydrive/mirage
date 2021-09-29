@@ -77,12 +77,8 @@ pub fn resize(
     width: u32,
     height: u32,
     filter: FilterEnum,
-) -> Result<(Atom, MirageImage), Error> {
-    let resized = resource.0.resize(width, height, filter.into());
-
-    let new_image = dyn_to_image(resized);
-
-    Ok((ok(), new_image))
+) -> MirageImage {
+    resource.0.resize(width, height, filter.into()).into()
 }
 
 #[rustler::nif(schedule = "DirtyCpu")]
@@ -92,21 +88,11 @@ pub fn resize_to_fill(
     width: u32,
     height: u32,
     filter: FilterEnum,
-) -> Result<(Atom, MirageImage), Error> {
-    let resized = resource.0.resize_to_fill(width, height, filter.into());
-
-    let new_image = dyn_to_image(resized);
-
-    Ok((ok(), new_image))
-}
-
-fn dyn_to_image(dynamic_image: DynamicImage) -> MirageImage {
-    MirageImage {
-        byte_size: image_size(&dynamic_image),
-        height: dynamic_image.height(),
-        width: dynamic_image.width(),
-        resource: ResourceArc::new(dynamic_image.into()),
-    }
+) -> MirageImage {
+    resource
+        .0
+        .resize_to_fill(width, height, filter.into())
+        .into()
 }
 
 #[rustler::nif(schedule = "DirtyCpu")]
@@ -116,14 +102,12 @@ pub fn overlay(
     top: MirageImage,
     x: u32,
     y: u32,
-) -> Result<(Atom, MirageImage), Error> {
+) -> MirageImage {
     let mut working_image = bottom.resource.0.clone();
 
     image::imageops::overlay(&mut working_image, &top.resource.0, x, y);
 
-    let new_image = dyn_to_image(working_image);
-
-    Ok((ok(), new_image))
+    working_image.into()
 }
 
 #[derive(NifUnitEnum)]

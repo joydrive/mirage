@@ -1,4 +1,10 @@
 defmodule Mirage do
+  @moduledoc """
+  This top level module is for transforming images.
+
+  For reading and writing images, see the `Mirage.Image` module.
+  """
+
   alias Mirage.Image
 
   @type filter_type ::
@@ -15,8 +21,7 @@ defmodule Mirage do
   Returns `:out_of_memory` if the image is too large.
   Returns `:io_error` if the Erlang binary fails to write into memory.
   """
-  @spec resize(Image.t(), integer(), integer(), filter_type()) ::
-          {:ok, Image.t()} | {:error, :out_of_memory | :io_error}
+  @spec resize(Image.t(), integer(), integer(), filter_type()) :: Image.t()
   def resize(image, width, height, filter \\ :triangle) do
     Mirage.Native.resize(image.resource, width, height, filter)
   end
@@ -39,10 +44,5 @@ defmodule Mirage do
   @spec overlay(Image.t(), Image.t(), non_neg_integer(), non_neg_integer()) :: Image.t()
   def overlay(bottom, top, x, y) do
     Mirage.Native.overlay(bottom, top, x, y)
-  end
-
-  @spec write(Image.t(), String.t()) :: :ok | :error
-  def write(image, path) do
-    Mirage.Native.write(image, path)
   end
 end

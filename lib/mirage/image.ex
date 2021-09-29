@@ -1,10 +1,21 @@
 defmodule Mirage.Image do
+  @moduledoc """
+  Module for reading, writing, and creating images.
+  """
+
+  @typedoc """
+  Represents a loaded image in working memory.
+  """
   @type t :: %__MODULE__{
           byte_size: non_neg_integer(),
           height: non_neg_integer(),
           width: non_neg_integer()
         }
 
+  @typedoc """
+  The format of an image. This is also the list of supported formats that can be
+  read and written with this library.
+  """
   @type format ::
           :png
           | :jpeg
@@ -28,7 +39,7 @@ defmodule Mirage.Image do
   )
 
   @doc """
-  Loads an image from Erlang bytes.
+  Attempts to load an image from a `binary`.
   """
   @spec from_bytes(binary()) ::
           {:ok, format(), t()}
@@ -43,5 +54,14 @@ defmodule Mirage.Image do
   @spec empty(non_neg_integer(), non_neg_integer()) :: {:ok, t()}
   def empty(width, height) do
     Mirage.Native.empty(width, height)
+  end
+
+  @doc """
+  Writes the image to the provided path. The format of the image is determined
+  by the file extension in the path.
+  """
+  @spec write(Image.t(), String.t()) :: :ok | :error
+  def write(image, path) do
+    Mirage.Native.write(image, path)
   end
 end

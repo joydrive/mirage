@@ -1,5 +1,5 @@
 defmodule MirageTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   doctest Mirage
 
@@ -27,7 +27,7 @@ defmodule MirageTest do
 
     {:ok, :jpeg, image} = Mirage.Image.from_bytes(bytes)
 
-    {:ok, resized_image} = Mirage.resize(image, 200, 200)
+    resized_image = Mirage.resize(image, 200, 200)
 
     assert image.byte_size > resized_image.byte_size
     assert resized_image.width == 200
@@ -41,9 +41,10 @@ defmodule MirageTest do
     {:ok, _, bottom} = Mirage.Image.from_bytes(bottom)
     {:ok, _, top} = Mirage.Image.from_bytes(top)
 
-    {:ok, new_image} = Mirage.overlay(bottom, top, 160, 160)
-
-    :ok = Mirage.write(new_image, "./test/support/images/overlay.png")
+    :ok =
+      bottom
+      |> Mirage.overlay(top, 160, 160)
+      |> Mirage.Image.write("./test/support/images/overlay.png")
   end
 
   test "resize_to_fill/3" do
@@ -51,14 +52,15 @@ defmodule MirageTest do
 
     {:ok, :jpeg, image} = Mirage.Image.from_bytes(bytes)
 
-    {:ok, new_image} = Mirage.resize(image, 1000, 100)
-
-    :ok = Mirage.write(new_image, "./test/support/images/resize_to_fill.png")
+    :ok =
+      image
+      |> Mirage.resize(1000, 100)
+      |> Mirage.Image.write("./test/support/images/resize_to_fill.png")
   end
 
   test "empty/2" do
     {:ok, image} = Mirage.Image.empty(100, 100)
 
-    :ok = Mirage.write(image, "./test/support/images/empty.png")
+    :ok = Mirage.Image.write(image, "./test/support/images/empty.png")
   end
 end

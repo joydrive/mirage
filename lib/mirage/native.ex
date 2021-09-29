@@ -1,4 +1,5 @@
 defmodule Mirage.Native do
+  @moduledoc false
   use Rustler, otp_app: :mirage
 
   def from_bytes(_path), do: :erlang.nif_error(:nif_not_loaded)

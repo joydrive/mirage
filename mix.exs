@@ -23,7 +23,8 @@ defmodule Mirage.MixProject do
     [
       {:rustler, "~> 0.22"},
       {:exblockhash,
-       git: "https://github.com/joydrive/exblockhash.git", ref: "43a9d35", only: [:test]}
+       git: "https://github.com/joydrive/exblockhash.git", ref: "43a9d35", only: [:test]},
+      {:credo, "~> 1.6.0-rc.1", only: [:dev, :test], runtime: false}
     ]
   end
 end
