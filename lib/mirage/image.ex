@@ -60,7 +60,7 @@ defmodule Mirage.Image do
   Writes the image to the provided path. The format of the image is determined
   by the file extension in the path.
   """
-  @spec write(Image.t(), String.t()) :: :ok | :error
+  @spec write(Image.t(), String.t()) :: :ok | {:error, :io_error}
   def write(image, path) do
     Mirage.Native.write(image, path)
   end
