@@ -15,19 +15,19 @@ pub struct MirageImage {
 
 pub struct Image(DynamicImage);
 
-impl Into<Image> for DynamicImage {
-    fn into(self) -> Image {
-        Image(self)
+impl From<DynamicImage> for Image {
+    fn from(dynamic_image: DynamicImage) -> Image {
+        Image(dynamic_image)
     }
 }
 
-impl Into<MirageImage> for DynamicImage {
-    fn into(self) -> MirageImage {
+impl From<DynamicImage> for MirageImage {
+    fn from(dynamic_image: DynamicImage) -> MirageImage {
         MirageImage {
-            byte_size: image_size(&self),
-            height: self.height(),
-            width: self.width(),
-            resource: ResourceArc::new(self.into()),
+            byte_size: image_size(&dynamic_image),
+            height: dynamic_image.height(),
+            width: dynamic_image.width(),
+            resource: ResourceArc::new(dynamic_image.into()),
         }
     }
 }
@@ -56,11 +56,11 @@ pub enum FilterEnum {
     Lanczos3,
 }
 
-impl Into<image::imageops::FilterType> for FilterEnum {
-    fn into(self) -> FilterType {
+impl From<FilterEnum> for image::imageops::FilterType {
+    fn from(filter: FilterEnum) -> image::imageops::FilterType {
         use FilterEnum::*;
 
-        match self {
+        match filter {
             Nearest => FilterType::Nearest,
             Triangle => FilterType::Triangle,
             CatmullRom => FilterType::CatmullRom,
@@ -163,16 +163,16 @@ impl TryFrom<ImageFormat> for Format {
             ImageFormat::Hdr => Hdr,
             ImageFormat::Farbfeld => Farbfeld,
             ImageFormat::Avif => Avif,
-            _ => Err(())?,
+            _ => return Err(()),
         })
     }
 }
 
-impl Into<ImageFormat> for Format {
-    fn into(self) -> ImageFormat {
+impl From<Format> for ImageFormat {
+    fn from(format: Format) -> ImageFormat {
         use Format::*;
 
-        match self {
+        match format {
             Png => ImageFormat::Png,
             Jpeg => ImageFormat::Jpeg,
             Gif => ImageFormat::Gif,
