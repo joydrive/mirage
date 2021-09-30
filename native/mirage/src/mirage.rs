@@ -180,12 +180,12 @@ pub fn write(
     image: MirageImage,
     destination: String,
 ) -> Result<Atom, Error> {
-    let result = image.resource.0.save(destination);
-
-    match result {
-        Ok(_) => Ok(ok()),
-        Err(e) => Err(Error::Term(Box::new(format!("{}", e)))),
-    }
+    image
+        .resource
+        .0
+        .save(destination)
+        .map(|_| ok())
+        .map_err(|e| Error::Term(Box::new(format!("{}", e))))
 }
 
 #[rustler::nif(schedule = "DirtyCpu")]
