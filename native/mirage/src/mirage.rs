@@ -1,6 +1,6 @@
 use std::convert::{TryFrom, TryInto};
 
-use crate::atoms::{invalid_image, io_error, ok, unsupported_image_format};
+use crate::atoms::{invalid_image, ok, unsupported_image_format};
 use image::{imageops::FilterType, DynamicImage, GenericImageView, ImageFormat};
 use rustler::{Atom, Binary, Env, Error, NifResult, NifStruct, NifUnitEnum, ResourceArc, Term};
 
@@ -180,13 +180,12 @@ pub fn write(
     image: MirageImage,
     destination: String,
 ) -> Result<Atom, Error> {
-    image
-        .resource
-        .0
-        .save(destination)
-        .map_err(|_e| Error::Term(Box::new(io_error())))?;
+    let result = image.resource.0.save(destination);
 
-    Ok(ok())
+    match result {
+        Ok(_) => Ok(ok()),
+        Err(e) => Err(Error::Term(Box::new(format!("{}", e)))),
+    }
 }
 
 #[rustler::nif(schedule = "DirtyCpu")]
