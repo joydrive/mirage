@@ -39,7 +39,6 @@ defmodule Mirage.MixProject do
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:exblockhash,
        git: "https://github.com/joydrive/exblockhash.git", ref: "43a9d35", only: [:test]},
-      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
       {:rustler, "~> 0.22"}
     ]
   end
