@@ -42,7 +42,7 @@ defmodule Mirage do
   Overlays the `top` image over the `bottom` image.
   """
   @spec overlay(Image.t(), Image.t(), non_neg_integer(), non_neg_integer()) :: Image.t()
-  def overlay(bottom, top, x, y) do
+  def overlay(bottom, top, x \\ 0, y \\ 0) do
     Mirage.Native.overlay(bottom, top, x, y)
   end
 end

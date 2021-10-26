@@ -39,7 +39,9 @@ defmodule Mirage.Image do
   )
 
   @doc """
-  Attempts to load an image from a `binary`.
+  Loads an image from a `binary`.
+
+  Returns the discovered format of the image on success.
   """
   @spec from_bytes(binary()) ::
           {:ok, format(), t()}
@@ -49,7 +51,41 @@ defmodule Mirage.Image do
   end
 
   @doc """
+  Reads an image from the filesystem at `path`.
+  """
+  @spec read(String.t()) ::
+          {:ok, format(), t()}
+          | {:error, File.posix() | :invalid_image | :unsupported_image_format}
+  def read(path) do
+    with {:ok, bytes} <- File.read(path) do
+      from_bytes(bytes)
+    end
+  end
+
+  @doc """
+  Similar to `c:read/1` but raises `Mirage.ReadError` if an error occurs.
+  """
+  @spec read!(String.t()) :: {format(), t()} | no_return()
+  def read!(path) do
+    case read(path) do
+      {:ok, format, image} ->
+        {format, image}
+
+      {:error, error} ->
+        raise Mirage.ReadError,
+          message: "Error while reading image from path '#{path}': '#{inspect(error)}'",
+          path: path,
+          error: error
+    end
+  end
+
+  @doc """
   Creates a new empty image with the given width and height.
+
+  ## Example
+
+    iex> {:ok, _image} = Mirage.Image.empty(100, 100)
+
   """
   @spec empty(non_neg_integer(), non_neg_integer()) :: {:ok, t()}
   def empty(width, height) do
@@ -60,8 +96,25 @@ defmodule Mirage.Image do
   Writes the image to the provided path. The format of the image is determined
   by the file extension in the path.
   """
-  @spec write(Image.t(), String.t()) :: :ok | {:error, String.t()}
+  @spec write(t(), String.t()) :: :ok | {:error, String.t()}
   def write(image, path) do
     Mirage.Native.write(image, path)
+  end
+
+  @doc """
+  Similar to `c:write/2` but raises `Mirage.WriteError` if an error occurs.
+  """
+  @spec write!(t(), String.t()) :: :ok | no_return()
+  def write!(image, path) do
+    case Mirage.Native.write(image, path) do
+      :ok ->
+        :ok
+
+      {:error, error} ->
+        raise Mirage.WriteError,
+          message: "Error while writing image to path '#{path}': '#{inspect(error)}'",
+          path: path,
+          error: error
+    end
   end
 end
