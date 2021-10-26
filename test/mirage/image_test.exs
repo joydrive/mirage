@@ -8,7 +8,7 @@ defmodule Mirage.ImageTest do
   @nonexistant_image_path "does-not-exist.txt"
 
   describe "from_bytes/1" do
-    test "loads images and metadata correctly" do
+    test "returns a tuple containing an image and the discovered format from the provided bytes" do
       bytes = File.read!(@test_image_path)
 
       {:ok, :jpeg, image} = Mirage.Image.from_bytes(bytes)
@@ -27,7 +27,7 @@ defmodule Mirage.ImageTest do
   end
 
   describe "read/1" do
-    test "loads images and metadata correctly" do
+    test "returns a tuple containing an image and the discovered format for a given filepath" do
       {:ok, :jpeg, image} = Mirage.Image.read(@test_image_path)
 
       assert image.byte_size == 634_800
@@ -46,7 +46,7 @@ defmodule Mirage.ImageTest do
   end
 
   describe "read!/1" do
-    test "loads images and metadata correctly" do
+    test "returns a tuple containing an image and the discovered format for a given filepath" do
       {:jpeg, image} = Mirage.Image.read!(@test_image_path)
 
       assert image.byte_size == 634_800
@@ -83,7 +83,7 @@ defmodule Mirage.ImageTest do
   end
 
   describe "write/1" do
-    test "writes images successfully" do
+    test "returns :ok when the image is written successfully" do
       tmp_image_path = "./test/support/images/test_output_image1.png"
 
       {:jpeg, image} = Mirage.Image.read!(@test_image_path)
@@ -99,7 +99,7 @@ defmodule Mirage.ImageTest do
   end
 
   describe "write!/1" do
-    test "writes images successfully" do
+    test "returns :ok when the image is written successfully" do
       tmp_image_path = "./test/support/images/test_output_image2.png"
 
       {:jpeg, image} = Mirage.Image.read!(@test_image_path)
