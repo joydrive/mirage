@@ -63,7 +63,7 @@ defmodule Mirage.Image do
   end
 
   @doc """
-  Similar to `c:read/1` but raises `Mirage.ReadError` if an error occurs.
+  Similar to `read/1` but raises `Mirage.ReadError` if an error occurs.
   """
   @spec read!(String.t()) :: {format(), t()} | no_return()
   def read!(path) do
@@ -102,7 +102,7 @@ defmodule Mirage.Image do
   end
 
   @doc """
-  Similar to `c:write/2` but raises `Mirage.WriteError` if an error occurs.
+  Similar to `write/2` but raises `Mirage.WriteError` if an error occurs.
   """
   @spec write!(t(), String.t()) :: :ok | no_return()
   def write!(image, path) do
