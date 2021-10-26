@@ -42,6 +42,15 @@ defmodule Mirage.Image do
   Loads an image from a `binary`.
 
   Returns the discovered format of the image on success.
+
+  ## Example
+
+  ```elixir
+  # Could also be from a HTTP request or something like S3!
+  bytes = File.read!("./input.png")
+
+  {:ok, :png, image} = Mirage.Image.from_bytes(bytes)
+  ```
   """
   @spec from_bytes(binary()) ::
           {:ok, format(), t()}
@@ -52,6 +61,12 @@ defmodule Mirage.Image do
 
   @doc """
   Reads an image from the filesystem at `path`.
+
+  ## Example
+
+  ```elixir
+  {:ok, :png, image} = Mirage.Image.read("./input.png")
+  ```
   """
   @spec read(String.t()) ::
           {:ok, format(), t()}
@@ -64,6 +79,12 @@ defmodule Mirage.Image do
 
   @doc """
   Similar to `read/1` but raises `Mirage.ReadError` if an error occurs.
+
+  ## Example
+
+  ```elixir
+  {:png, image} = Mirage.Image.read!("./input.png")
+  ```
   """
   @spec read!(String.t()) :: {format(), t()} | no_return()
   def read!(path) do
@@ -84,7 +105,8 @@ defmodule Mirage.Image do
 
   ## Example
 
-    iex> {:ok, _image} = Mirage.Image.empty(100, 100)
+      iex> match?({:ok, %Mirage.Image{width: 100, height: 100}}, Mirage.Image.empty(100, 100))
+      true
 
   """
   @spec empty(non_neg_integer(), non_neg_integer()) :: {:ok, t()}
@@ -95,6 +117,13 @@ defmodule Mirage.Image do
   @doc """
   Writes the image to the provided path. The format of the image is determined
   by the file extension in the path.
+
+  ## Example
+
+  ```elixir
+  Mirage.Image.write(image, "./output.png")
+  ```
+
   """
   @spec write(t(), String.t()) :: :ok | {:error, String.t()}
   def write(image, path) do
@@ -103,6 +132,12 @@ defmodule Mirage.Image do
 
   @doc """
   Similar to `write/2` but raises `Mirage.WriteError` if an error occurs.
+
+  ## Example
+
+  ```elixir
+  Mirage.Image.write!(image, "./output.png")
+  ```
   """
   @spec write!(t(), String.t()) :: :ok | no_return()
   def write!(image, path) do

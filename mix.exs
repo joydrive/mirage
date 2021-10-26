@@ -10,7 +10,12 @@ defmodule Mirage.MixProject do
       rustler_crates: [mirage: []],
       start_permanent: Mix.env() == :prod,
       version: "0.1.0",
-      dialyzer: dialyzer()
+      dialyzer: dialyzer(),
+      name: "Mirage",
+      docs: [
+        main: "Mirage",
+        extras: ["README.md"]
+      ]
     ]
   end
 

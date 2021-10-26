@@ -31,7 +31,7 @@ end
 
 ## Resizing Example
 
-```ex
+```elixir
 {_, image} = Mirage.Image.read!("input.jpg")
 
 image
