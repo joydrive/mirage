@@ -15,11 +15,22 @@ defmodule Mirage do
           | :lanczos3
 
   @doc """
-  Resizes an image to a given dimensions with the given filter.
-  The filter defaults to `:triangle` which performs and looks decent.
+  Returns a resized image with the given dimensions using the given filter.
+  The filter defaults to `:triangle` which performs well and looks decent.
 
-  Returns `:out_of_memory` if the image is too large.
-  Returns `:io_error` if the Erlang binary fails to write into memory.
+  ## Examples
+
+  With implied `:triangle` filter.
+
+  ```
+  Mirage.resize(image, 100, 100)
+  ```
+
+  With a custom filter algorithm.
+
+  ```
+  Mirage.resize(image, 100, 100, :lanczos3)
+  ```
   """
   @spec resize(Image.t(), integer(), integer(), filter_type()) :: Image.t()
   def resize(image, width, height, filter \\ :triangle) do
@@ -27,22 +38,47 @@ defmodule Mirage do
   end
 
   @doc """
-  Resize this image using the specified filter algorithm defaults to
+  Returns a resized image using the specified filter algorithm defaults to
   `:triangle`. The image’s aspect ratio is preserved. The image is scaled to the
   maximum possible size that fits within the larger (relative to aspect ratio)
   of the bounds specified by nwidth and nheight, then cropped to fit within the
   other bound.
+
+  ## Examples
+
+  With implied `:triangle` filter.
+
+  ```
+  Mirage.resize_to_fill(image, 100, 100)
+  ```
+
+  With a custom filter algorithm.
+
+  ```
+  Mirage.resize_to_fill(image, 100, 100, :lanczos3)
+  ```
   """
+
   @spec resize_to_fill(Image.t(), integer(), integer(), filter_type()) :: Image.t()
   def resize_to_fill(image, new_width, new_height, filter \\ :triangle) do
     Mirage.Native.resize_to_fill(image.resource, new_width, new_height, filter)
   end
 
   @doc """
-  Overlays the `top` image over the `bottom` image.
+  Returns a new image with the `top` image overlayed over the `bottom` image.
+
+  ## Example
+
+  ```
+  {:ok, canvas} = Mirage.Image.empty(100, 100)
+
+  canvas
+  |> Mirage.overlay(image_a)
+  |> Mirage.overlay(image_b)
+  ```
   """
   @spec overlay(Image.t(), Image.t(), non_neg_integer(), non_neg_integer()) :: Image.t()
-  def overlay(bottom, top, x, y) do
+  def overlay(bottom, top, x \\ 0, y \\ 0) do
     Mirage.Native.overlay(bottom, top, x, y)
   end
 end

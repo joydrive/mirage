@@ -9,7 +9,20 @@ defmodule Mirage.MixProject do
       elixir: "~> 1.7",
       rustler_crates: [mirage: []],
       start_permanent: Mix.env() == :prod,
-      version: "0.1.0"
+      version: "0.1.0",
+      dialyzer: dialyzer(),
+      name: "Mirage",
+      docs: [
+        main: "Mirage",
+        extras: ["README.md"]
+      ]
+    ]
+  end
+
+  defp dialyzer do
+    [
+      plt_core_path: "priv/plts",
+      plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
     ]
   end
 
@@ -21,10 +34,12 @@ defmodule Mirage.MixProject do
 
   defp deps do
     [
-      {:rustler, "~> 0.22"},
+      {:credo, "~> 1.6.0-rc.1", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:exblockhash,
        git: "https://github.com/joydrive/exblockhash.git", ref: "43a9d35", only: [:test]},
-      {:credo, "~> 1.6.0-rc.1", only: [:dev, :test], runtime: false}
+      {:rustler, "~> 0.22"}
     ]
   end
 end
