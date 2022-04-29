@@ -10,6 +10,7 @@ rustler::init! {
         mirage::overlay,
         mirage::write,
         mirage::empty,
+        mirage::fill,
     ],
     load = mirage::load
 }
