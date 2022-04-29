@@ -115,7 +115,7 @@ defmodule Mirage.ImageTest do
   end
 
   test "empty/2" do
-    {:ok, image} = Mirage.Image.empty(100, 100)
+    image = Mirage.Image.empty(100, 100)
 
     :ok = Mirage.Image.write(image, "./test/support/images/empty.png")
   end

@@ -105,11 +105,11 @@ defmodule Mirage.Image do
 
   ## Example
 
-      iex> match?({:ok, %Mirage.Image{width: 100, height: 100}}, Mirage.Image.empty(100, 100))
+      iex> match?(%Mirage.Image{width: 100, height: 100}, Mirage.Image.empty(100, 100))
       true
 
   """
-  @spec empty(non_neg_integer(), non_neg_integer()) :: {:ok, t()}
+  @spec empty(non_neg_integer(), non_neg_integer()) :: t()
   def empty(width, height) do
     Mirage.Native.empty(width, height)
   end

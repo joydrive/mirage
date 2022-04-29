@@ -193,10 +193,8 @@ pub fn empty(
     #[allow(unused_variables)] env: Env,
     width: u32,
     height: u32,
-) -> Result<(Atom, MirageImage), Error> {
-    let dyn_image = DynamicImage::new_rgba8(width, height);
-
-    Ok((ok(), dyn_image.into()))
+) -> Result<MirageImage, Error> {
+    Ok(DynamicImage::new_rgba8(width, height).into())
 }
 
 // Returns the image size in bytes.
