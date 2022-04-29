@@ -1,6 +1,8 @@
 defmodule Mirage.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+
   def project do
     [
       app: :mirage,
@@ -9,7 +11,7 @@ defmodule Mirage.MixProject do
       elixir: "~> 1.7",
       rustler_crates: [mirage: []],
       start_permanent: Mix.env() == :prod,
-      version: "0.1.0",
+      version: @version,
       dialyzer: dialyzer(),
       name: "Mirage",
       docs: [

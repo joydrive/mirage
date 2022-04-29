@@ -1,6 +1,13 @@
 defmodule Mirage.Native do
   @moduledoc false
-  use Rustler, otp_app: :mirage
+  version = Mix.Project.config()[:version]
+
+  use RustlerPrecompiled,
+    otp_app: :mirage,
+    crate: "mirage",
+    base_url: "https://github.com/joydrive/mirage/releases/download/v#{version}",
+    force_build: System.get_env("RUSTLER_PRECOMPILATION_MIRAGE_BUILD") in ["1", "true"],
+    version: version
 
   def from_bytes(_path), do: :erlang.nif_error(:nif_not_loaded)
   def resize(_resource, _width, _height, _filter), do: :erlang.nif_error(:nif_not_loaded)
