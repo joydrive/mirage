@@ -3,6 +3,8 @@ defmodule Mirage.Image do
   Module for reading, writing, and creating images.
   """
 
+  alias Mirage.Color
+
   @typedoc """
   Represents a loaded image in working memory.
   """
@@ -105,13 +107,41 @@ defmodule Mirage.Image do
 
   ## Example
 
-      iex> match?({:ok, %Mirage.Image{width: 100, height: 100}}, Mirage.Image.empty(100, 100))
+      iex> match?(%Mirage.Image{width: 100, height: 100}, Mirage.Image.empty(100, 100))
       true
 
   """
-  @spec empty(non_neg_integer(), non_neg_integer()) :: {:ok, t()}
+  @spec empty(non_neg_integer(), non_neg_integer()) :: t()
   def empty(width, height) do
     Mirage.Native.empty(width, height)
+  end
+
+  @doc """
+  Creates a new image with the given width and height from the given color.
+
+  ## Example
+
+      iex> match?(%Mirage.Image{width: 100, height: 100}, Mirage.Image.new(100, 100, %Mirage.Color{r: 1.0, g: 1.0, b: 1.0, a: 1.0}))
+      true
+
+  """
+  @spec new(non_neg_integer(), non_neg_integer(), Color.t()) :: t()
+  def new(width, height, %Color{} = color) do
+    fill(Mirage.Native.empty(width, height), color)
+  end
+
+  @doc """
+  Fills an image with a specific color.
+
+  Overwrites any existing pixel values.
+
+  ```elixir
+  Mirage.Image.fill(Mirage.Image.empty(), %Mirage.Color{r: 1.0, g: 1.0, b: 1.0, a: 1.0})
+  ```
+  """
+  @spec fill(t(), Color.t()) :: t()
+  def fill(image, %Color{} = color) do
+    Mirage.Native.fill(image, color.r, color.g, color.b, color.a)
   end
 
   @doc """

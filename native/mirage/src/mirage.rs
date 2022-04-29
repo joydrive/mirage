@@ -1,7 +1,7 @@
 use std::convert::{TryFrom, TryInto};
 
 use crate::atoms::{invalid_image, ok, unsupported_image_format};
-use image::{imageops::FilterType, DynamicImage, GenericImageView, ImageFormat};
+use image::{imageops::FilterType, DynamicImage, GenericImage, GenericImageView, ImageFormat};
 use rustler::{Atom, Binary, Env, Error, NifResult, NifStruct, NifUnitEnum, ResourceArc, Term};
 
 #[derive(NifStruct, Clone)]
@@ -193,10 +193,33 @@ pub fn empty(
     #[allow(unused_variables)] env: Env,
     width: u32,
     height: u32,
-) -> Result<(Atom, MirageImage), Error> {
-    let dyn_image = DynamicImage::new_rgba8(width, height);
+) -> Result<MirageImage, Error> {
+    Ok(DynamicImage::new_rgba8(width, height).into())
+}
 
-    Ok((ok(), dyn_image.into()))
+#[rustler::nif(schedule = "DirtyCpu")]
+pub fn fill(
+    #[allow(unused_variables)] env: Env,
+    image: MirageImage,
+    r: f32,
+    g: f32,
+    b: f32,
+    a: f32
+) -> Result<MirageImage, Error> {
+    let r: u8 = (r * u8::MAX as f32) as u8;
+    let g: u8 = (g * u8::MAX as f32) as u8;
+    let b: u8 = (b * u8::MAX as f32) as u8;
+    let a: u8 = (a * u8::MAX as f32) as u8;
+
+    let mut working_image = image.resource.0.clone();
+
+    for x in 0..working_image.width() {
+        for y in 0..working_image.height() {
+            working_image.put_pixel(x, y, image::Rgba([r, g, b, a]))
+        }
+    }
+
+    Ok(working_image.into())
 }
 
 // Returns the image size in bytes.

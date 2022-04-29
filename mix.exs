@@ -1,6 +1,8 @@
 defmodule Mirage.MixProject do
   use Mix.Project
 
+  @version "0.1.0-dev"
+
   def project do
     [
       app: :mirage,
@@ -9,7 +11,7 @@ defmodule Mirage.MixProject do
       elixir: "~> 1.7",
       rustler_crates: [mirage: []],
       start_permanent: Mix.env() == :prod,
-      version: "0.1.0",
+      version: @version,
       dialyzer: dialyzer(),
       name: "Mirage",
       docs: [
@@ -38,8 +40,9 @@ defmodule Mirage.MixProject do
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:exblockhash,
-       git: "https://github.com/joydrive/exblockhash.git", ref: "43a9d35", only: [:test]},
-      {:rustler, "~> 0.22"}
+       git: "https://github.com/joydrive/exblockhash.git", ref: "0290186", only: [:test]},
+      {:rustler, "~> 0.25"},
+      {:rustler_precompiled, "~> 0.4"}
     ]
   end
 end
