@@ -37,7 +37,8 @@ defmodule Mirage.MixProject do
       {:credo, "~> 1.6.0-rc.1", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
-      {:exblockhash, git: "https://github.com/joydrive/exblockhash.git", ref: "0290186", only: [:test]},
+      {:exblockhash,
+       git: "https://github.com/joydrive/exblockhash.git", ref: "0290186", only: [:test]},
       {:rustler, "~> 0.25"}
     ]
   end
