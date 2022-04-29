@@ -1,7 +1,7 @@
 defmodule Mirage.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.1.0-dev"
 
   def project do
     [
@@ -41,7 +41,8 @@ defmodule Mirage.MixProject do
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:exblockhash,
        git: "https://github.com/joydrive/exblockhash.git", ref: "0290186", only: [:test]},
-      {:rustler, "~> 0.25"}
+      {:rustler, "~> 0.25"},
+      {:rustler_precompiled, "~> 0.4"}
     ]
   end
 end
