@@ -38,8 +38,8 @@ defmodule Mirage.MixProject do
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:exblockhash,
-       git: "https://github.com/joydrive/exblockhash.git", ref: "43a9d35", only: [:test]},
-      {:rustler, "~> 0.22"}
+       git: "https://github.com/joydrive/exblockhash.git", ref: "0290186", only: [:test]},
+      {:rustler, "~> 0.25"}
     ]
   end
 end

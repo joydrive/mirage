@@ -14,9 +14,9 @@ jobs:
       matrix:
         rust:
           - stable
-          - 1.53.0
+          - 1.56.1
         otp: ["24.0"]
-        elixir: ["1.12.0"]
+        elixir: ["1.13.4"]
 
     steps:
       - uses: actions/checkout@v2

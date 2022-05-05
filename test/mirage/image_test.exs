@@ -115,8 +115,34 @@ defmodule Mirage.ImageTest do
   end
 
   test "empty/2" do
-    {:ok, image} = Mirage.Image.empty(100, 100)
+    image = Mirage.Image.empty(100, 100)
 
     :ok = Mirage.Image.write(image, "./test/support/images/empty.png")
+  end
+
+  describe "new/3" do
+    test "creates a new red image" do
+      :ok =
+        Mirage.Image.write(
+          Mirage.Image.new(100, 100, Mirage.Color.red()),
+          "./test/support/images/colors/red.png"
+        )
+    end
+
+    test "creates a new blue image" do
+      :ok =
+        Mirage.Image.write(
+          Mirage.Image.new(100, 100, Mirage.Color.blue()),
+          "./test/support/images/colors/blue.png"
+        )
+    end
+
+    test "creates a new green image" do
+      :ok =
+        Mirage.Image.write(
+          Mirage.Image.new(100, 100, Mirage.Color.green()),
+          "./test/support/images/colors/green.png"
+        )
+    end
   end
 end
