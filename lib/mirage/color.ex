@@ -1,6 +1,6 @@
 defmodule Mirage.Color do
   @moduledoc """
-  Represents a RGBA color using floating point values per channel.
+  Represents an RGBA color using floating point values per channel.
 
   r: red
   g: green
