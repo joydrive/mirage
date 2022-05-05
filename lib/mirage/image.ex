@@ -117,7 +117,7 @@ defmodule Mirage.Image do
   end
 
   @doc """
-  Creates a new image with the given width and height from the given color.
+  Creates a new image with the given dimensions consisting entirely of the specified color.
 
   ## Example
 
